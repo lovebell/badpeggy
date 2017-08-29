@@ -1,0 +1,8 @@
+.DS_Store
+bin
+tmp
+.settings
+*.class
+*.jar
+build
+dist.sh

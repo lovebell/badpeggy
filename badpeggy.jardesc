@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<jardesc>
+    <jar path="BadPeggy/build/badpeggy.jar"/>
+    <options buildIfNeeded="true" compress="true" descriptionLocation="/BadPeggy/badpeggy.jardesc" exportErrors="false" exportWarnings="false" includeDirectoryEntries="false" overwrite="false" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
+    <storedRefactorings deprecationInfo="true" structuralOnly="false"/>
+    <selectedProjects/>
+    <manifest generateManifest="false" mainClassHandleIdentifier="=BadPeggy/src&lt;coderslagoon.badpeggy{GUI.java[GUI" manifestLocation="/BadPeggy/MANIFEST.MF" manifestVersion="1.0" reuseManifest="true" saveManifest="true" usesManifest="true">
+        <sealing sealJar="true">
+            <packagesToSeal/>
+            <packagesToUnSeal/>
+        </sealing>
+    </manifest>
+    <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
+        <javaElement handleIdentifier="=CLBaseLib/src"/>
+        <javaElement handleIdentifier="=BadPeggy/src"/>
+    </selectedElements>
+</jardesc>

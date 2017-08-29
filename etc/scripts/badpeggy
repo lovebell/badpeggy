@@ -1,0 +1,6 @@
+#!/bin/bash
+BADPEGGYDIR=`readlink -f "$0"`
+BADPEGGYDIR=`dirname "$BADPEGGYDIR"`
+JAVA_HOME="$BADPEGGYDIR/jre"
+export JAVA_HOME
+exec -a badpeggy "$JAVA_HOME/bin/java" -cp "$BADPEGGYDIR/badpeggy.jar" coderslagoon.badpeggy.GUI

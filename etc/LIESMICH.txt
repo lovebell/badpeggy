@@ -1,0 +1,5 @@
+INSTALLATION
+
+Durch Starten der Datei "install.vbs" wird eine Verknüpfung auf dem Desktop
+angelegt. Sie verweist auf das Installationsverzeichnis, wird also ungültig wenn
+dieses verschoben oder gelöscht wird.
