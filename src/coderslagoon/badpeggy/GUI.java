@@ -94,7 +94,7 @@ import coderslagoon.baselib.util.VarRef;
 public class GUI implements Runnable, NLS.Reg.Listener {
     final static String PROPERTIES = "badpeggy";
 
-    final static String VERSION = "2.2";
+    final static String VERSION = "2.3";
 
     final static int DLG_GAP = 10;
 
@@ -601,7 +601,8 @@ public class GUI implements Runnable, NLS.Reg.Listener {
     final static String DEFAULT_LANG_ID = "de";
     final static String[][] LANGS = new String[][] {
         { DEFAULT_LANG_ID, "Deutsch" },
-        { "en"           , "English" }
+        { "en"           , "English" },
+        { "cz"           , "Český"   }
     };
 
     Listener onLanguage = new Safe.Listener() {
@@ -1266,11 +1267,15 @@ public class GUI implements Runnable, NLS.Reg.Listener {
             InputStream ins = null;
             try {
                 GUI.this.updateProgress(this.fnode.path(true));
-                ins = this.fnode.fileSystem().openRead(this.fnode);
+                ImageScanner.InputStreamSource iss = new ImageScanner.InputStreamSource() {
+                    public InputStream get() throws IOException{
+                        InputStream ins = ScanRun.this.fnode.fileSystem().openRead(ScanRun.this.fnode);
+                        return new BufferedInputStream(ins, IO_BUF_SZ);
+                    }
+                };
                 ImageScanner scanner = new ImageScanner();
                 final VarRef<Boolean> aborted = new VarRef<>(false);
-                InputStream bins = new BufferedInputStream(ins, IO_BUF_SZ);
-                if (null == scanner.scan(bins,
+                if (null == scanner.scan(iss,
                     ImageFormat.fromFileName(this.fnode.name()),
                     percent -> !(aborted.v = GUI.this.esc.get()))) {
                     throw new Exception("missing JPEG reader");

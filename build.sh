@@ -39,6 +39,7 @@ cp etc/images/badpeggy.png  $BUILDIR/
 tr -d "\r" < LICENSE.txt      | cat > $BUILDIR/LICENSE
 tr -d "\r" < etc/README.txt   | cat > $BUILDIR/README
 tr -d "\r" < etc/LIESMICH.txt | cat > $BUILDIR/LIESMICH
+tr -d "\r" < etc/CTIMNE.txt   | cat > $BUILDIR/CTIMNE
 
 chmod 755 $BUILDIR/badpeggy
 chmod 755 $BUILDIR/install.sh
@@ -64,11 +65,13 @@ rm $BUILDIR/badpeggy.desktop
 rm $BUILDIR/*.sh
 rm $BUILDIR/README
 rm $BUILDIR/LIESMICH
+rm $BUILDIR/CTIMNE
 rm $BUILDIR/LICENSE
 
 cp LICENSE.txt                 $BUILDIR/LICENSE.txt
 cp etc/README.txt              $BUILDIR/
 cp etc/LIESMICH.txt            $BUILDIR/
+cp etc/CTIMNE.txt              $BUILDIR/
 cp etc/scripts/badpeggy*.cmd   $BUILDIR/
 cp etc/scripts/install.vbs     $BUILDIR/
 cp etc/images/badpeggy.ico     $BUILDIR/ 

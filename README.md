@@ -8,10 +8,10 @@ Implemented in Java 8 and SWT. Runs on Windows, MacOS and Linux.
 
 ## Development
 
-BadPeggy development is done in Eclipse (Oxygen+). Choose the right SWT project
+BadPeggy development is done in Eclipse (Photon+). Choose the right SWT project
 for your platform, and import it into your workspace. It will show up as
 *org.clipse.swt*. On Linux for instance it would be
-*swt/4.5/gtk-linux_x86_64/*. You also need the library CLBaseLib, which you can
+*swt/4.8/gtk-linux_x86_64/*. You also need the library CLBaseLib, which you can
 clone from GitHub and import its Eclipse project.
 
 You can then run Bad Peggy by debugging the class *coderslagoon.badpeggy.GUI*.

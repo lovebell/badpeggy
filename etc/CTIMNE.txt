@@ -1,0 +1,15 @@
+﻿INSTALACE
+
+Windows
+
+Zástupce na ploše vytvoříš spuštěním souboru "install.vbs". Směřuje do
+instalační složky, v případě jejího přesunu nebo smazání se proto stane
+neplatný.
+
+Linux
+
+Rozbal archív do zvoleného umístění. Otevři Terminál a jdi do zvolené složky,
+potom napiš "./install.sh", potvrď svoje heslo (musíš mít administrátorská
+práva). Po instalaci by měla být dostupná ikona aplikace. Rozbalenou část
+můžeš odstranit, protože skutečná instalace končí ve složce "/opt", ze které
+pak pro odstranění všeho můžeš spustit skript "./uninstall.sh".

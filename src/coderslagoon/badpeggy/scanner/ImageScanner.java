@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.imageio.IIOException;
@@ -54,8 +55,13 @@ public class ImageScanner implements IIOReadWarningListener, IIOReadProgressList
         ImageIO.setUseCache(false);
     }
 
-    static ImageReader newReader(String ifmt) {
-        return ImageIO.getImageReadersByFormatName(ifmt).next();
+    static List<ImageReader> newReaders(ImageFormat ifmt) {
+        List<ImageReader> result = new ArrayList<>();
+        Iterator<ImageReader> it = ImageIO.getImageReadersByFormatName(ifmt.name);
+        while (it.hasNext()) {
+            result.add(it.next());
+        }
+        return result;
     }
 
     public static class Result {
@@ -102,88 +108,97 @@ public class ImageScanner implements IIOReadWarningListener, IIOReadProgressList
     public interface Callback {
         boolean onProgress(double percent);
     }
+    
+    public interface InputStreamSource {
+        InputStream get() throws IOException;
+    }
 
-    public Boolean scan(InputStream ins, ImageFormat ifmt, Callback callback) {
+    public Boolean scan(InputStreamSource iss, ImageFormat ifmt, Callback callback) {
         this.lastResult = new Result();
         this.callback = callback;
-        ImageReader ireader = newReader(ifmt.name);
-        if (null == ireader) {
+        List<ImageReader> ireaders = newReaders(ifmt);
+        if (0 == ireaders.size()) {
             return null;
         }
-        try {
-            ireader.removeAllIIOReadProgressListeners();
-            ireader.removeAllIIOReadUpdateListeners();
-            ireader.removeAllIIOReadWarningListeners();
+        for (ImageReader ireader : ireaders) {
+            int lastResultMsgsSize = this.lastResult.msgs.size();
+            InputStream ins = null;
+            try {
 
-            ireader.addIIOReadWarningListener(this);
-            ireader.addIIOReadProgressListener(this);
-
-            ireader.setInput(ImageIO.createImageInputStream(ins));
-
-            this.imageCount = ireader.getNumImages(true);
-
-            for (this.imageIndex = 0; this.imageIndex < this.imageCount;) {
-                BufferedImage bimg = ireader.read(this.imageIndex++);
-
-                _log.trace("image decoded (" + bimg.getWidth () + "x" +
-                                               bimg.getHeight() + ")");
+                ireader.removeAllIIOReadProgressListeners();
+                ireader.removeAllIIOReadUpdateListeners();
+                ireader.removeAllIIOReadWarningListeners();
+    
+                ireader.addIIOReadWarningListener(this);
+                ireader.addIIOReadProgressListener(this);
+    
+                ins = iss.get();
+                ireader.setInput(ImageIO.createImageInputStream(ins));
+    
+                this.imageCount = ireader.getNumImages(true);
+    
+                for (this.imageIndex = 0; this.imageIndex < this.imageCount;) {
+                    BufferedImage bimg = ireader.read(this.imageIndex++);
+    
+                    _log.trace("image decoded (" + bimg.getWidth () + "x" +
+                                                   bimg.getHeight() + ")");
+                }
+    
+                this.lastResult.type = lastResultMsgsSize == this.lastResult.msgs.size() ?
+                        Result.Type.OK :
+                        Result.Type.WARNING;
+                break;
             }
-
-            this.lastResult.type = 0 == this.lastResult.msgs.size() ?
-                    Result.Type.OK :
-                    Result.Type.WARNING;
-        }
-        catch (NegativeArraySizeException nase) {
-            if (new Exception().getStackTrace().length <
-                nase           .getStackTrace().length) {
-                this.lastResult.msgs.add("Internal decoder error 1");
+            catch (NegativeArraySizeException nase) {
+                if (new Exception().getStackTrace().length <
+                    nase           .getStackTrace().length) {
+                    this.lastResult.msgs.add("Internal decoder error 1");
+                    this.lastResult.type = Result.Type.ERROR;
+                }
+                else {
+                    throw nase;
+                }
+            }
+            catch (ArrayIndexOutOfBoundsException aioobe) {
+                if (new Exception().getStackTrace().length <
+                    aioobe         .getStackTrace().length) {
+                    this.lastResult.msgs.add("Internal decoder error 2");
+                    this.lastResult.type = Result.Type.ERROR;
+                }
+                else {
+                    throw aioobe;
+                }
+            }
+            catch (IIOException iioe) {
+                _log.infof("decoding failed (%s)", iioe.getMessage());
+                this.lastResult.msgs.add(iioe.getMessage());
                 this.lastResult.type = Result.Type.ERROR;
             }
-            else {
-                throw nase;
-            }
-        }
-        catch (ArrayIndexOutOfBoundsException aioobe) {
-            if (new Exception().getStackTrace().length <
-                aioobe         .getStackTrace().length) {
-                this.lastResult.msgs.add("Internal decoder error 2");
+            catch (EOFException eofe) {
+                final String MSG = "premature file end";
+                _log.infof(MSG);
+                this.lastResult.msgs.add(MSG);
                 this.lastResult.type = Result.Type.ERROR;
             }
-            else {
-                throw aioobe;
+            catch (Throwable e) {
+                System.gc();
+                Log.exception(Log.Level.ERROR, "unexpected error", e);
+                String msg = e.getMessage();
+                if (null == msg) {
+                    this.lastResult.msgs.add(e.toString());
+                    this.lastResult.type = Result.Type.UNEXPECTED_ERROR;
+                }
+                else {
+                    this.lastResult.msgs.add(msg);
+                    this.lastResult.type = Result.Type.ERROR;
+                }
+            }
+            finally {
+                if (null != ins) try { ins.close(); } catch (IOException ioe) { }
+                ireader.dispose();
             }
         }
-        catch (IIOException iioe) {
-            _log.infof("decoding failed (%s)", iioe.getMessage());
-            this.lastResult.msgs.add(iioe.getMessage());
-            this.lastResult.type = Result.Type.ERROR;
-        }
-        catch (EOFException eofe) {
-            final String MSG = "premature file end";
-            _log.infof(MSG);
-            this.lastResult.msgs.add(MSG);
-            this.lastResult.type = Result.Type.ERROR;
-        }
-        catch (Throwable e) {
-            System.gc();
-            Log.exception(Log.Level.ERROR, "unexpected error", e);
-            String msg = e.getMessage();
-            if (null == msg) {
-                this.lastResult.msgs.add(e.toString());
-                this.lastResult.type = Result.Type.UNEXPECTED_ERROR;
-            }
-            else {
-                this.lastResult.msgs.add(msg);
-                this.lastResult.type = Result.Type.ERROR;
-            }
-        }
-        finally {
-            try { ins.close(); } catch (IOException ioe) { }
-            ireader.dispose();
-        }
-
         this.callback = null;
-
         return Result.Type.OK == this.lastResult.type();
     }
 
@@ -193,7 +208,11 @@ public class ImageScanner implements IIOReadWarningListener, IIOReadProgressList
     public static boolean selfTest() {
         try {
             ImageScanner js = new ImageScanner();
-            Boolean res = js.scan(new ByteArrayInputStream(SELFTEST_DATA), ImageFormat.JPEG, null);
+            Boolean res = js.scan(new InputStreamSource() {
+                public InputStream get() {
+                    return new ByteArrayInputStream(SELFTEST_DATA);
+                }
+            }, ImageFormat.JPEG, null);
             if (null == res) {
                 _log.fatal("selftest failed: image scanner not functioning");
                 return false;

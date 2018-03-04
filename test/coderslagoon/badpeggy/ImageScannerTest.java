@@ -390,7 +390,12 @@ public class ImageScannerTest implements ImageScanner.Callback {
                 }
             }
 
-            boolean ok = jscan.scan(new ByteArrayInputStream(imgdata_d), ifmt, this);
+            final byte[] imgdata_d_sourced = imgdata_d;
+            boolean ok = jscan.scan(new ImageScanner.InputStreamSource() {
+                public java.io.InputStream get() {
+                    return new ByteArrayInputStream(imgdata_d_sourced);
+                }
+            }, ifmt, this);
             ImageScanner.Result result = jscan.lastResult();
             assertTrue(lastResult != result);
             lastResult = result;

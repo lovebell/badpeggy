@@ -1,0 +1,109 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+  <title>Documentace Bad Peggy</title>
+  <style>
+    a:active  { color:black; }
+    a:link    { color:black; }
+    a:visited { color:black; }
+    body { font-family:Verdana,Geneva,sans-serif; color:black; background-color:white; }
+  </style>
+</head>
+<body>
+
+<h1>Dokumentace Bad Peggy</h1>
+<div class="ln">&nbsp;</div> 
+<h2>Použití</h2>
+<div>
+Skenování provedeš jednoduše:
+<ol>
+<li>Vyber složku pod <b>Soubor..Skenuj</b>. Táhni a pusť soubory a(nebo) složky do Bad Peggy.</li>
+<li>Počkej, dokud skenování neskončí. Můžeš ho zastavit přes <b>Soubor..Zastav skenování</b>.</li>
+<li>Zkontroluj soubory s možným poškozením v seznamu.</li>
+</ol>
+</div>
+
+<h2>Možnosti</h2>
+<div>
+BadPeggy skenuje všechny obrázkové soubory ve vybrané složce/složkách. Jestliže je zaškrtnuto 
+<b>Včetně podsložek</b>, bude prohledáváno vše, v opačném případě pouze soubory ve vybrané složce.
+<br/><br/>
+Vybráním <b>Přípony souborů...</b> můžeš zvolit, které soubory budou považovány za obrázky
+podle svých jmen nebo vlastně přípon (jako seznam s oddělovači). Základní výběr je obvykle 
+dostačující. Velikost písmen se nezohledňuje.
+<br/><br/>
+Skenování je možné urychlit nastavením <b>Využij všechna jádra procesoru</b>, pokud jsou 
+vícejádrové procesory v systému. V tomto případě se Bad Peggy snaží obsadit všechna jádra,
+skutečné zrychlení skenování záleží ale i na rychlosti ukládání.
+<br/><br/>
+Nastavením <b>Rozliš</b> budou podrobnosti zobrazeny v šedých odstínech pro snadnější odlišení 
+jednotlivých položek.
+<br/><br/>
+Mezi jazyky můžete přepínat v menu <b>Jazyk...</b>. V době psaní byla dostupná němčina, angličtina a čeština (od Petr Vobořil).
+</div>
+
+<h2>Po skenování</h2>
+<div>
+Pravděpodobně poškozené soubory se zobrazí v seznamu spolu s úplnou cestou a popisem poškození. 
+Kliknutím na položku se můžeš podívat na jednotlivé obrázky a posoudit skutečnou míru poškození.
+Prohlížeč může být zapnut nebo vypnut dvojitým kliknutím. Externí prohlížeč obrázků (nebo jakýkoliv, 
+asociovaný se soubory obrázků) může být spuštěn dvojitým kliknutím na položku seznamu. Povšimni si, 
+že seznam je možné třídit taky kliknutím na záhlaví sloupců.
+<br/><br/>
+Některé vady jsou u některých obrázků stěží, pokud vůbec, viditelné, zatímco jiné obrázky nemusí vůbec 
+vypadat dobře. Pokud chceš odebrat položku ze seznamu, protože považuješ obrázek za ještě použitelný, jednoduše 
+ho označ a zmáčkni tlačítko [Del]. Položka zmizí, zatímco fyzického souboru se to nijak nedotkne.
+<br/><br/>
+Ne každá zjištěná vada je důvodem ke smazání obrázku. Jestliže přesto chceš obrázek smazat, otevři 
+kontextovou nabídku kliknutím pravého tlačítka. Pak můžeš pro vymazání souboru kliknout na <b>Smazat</b>. 
+Můžeš taky přesunout vybrané soubory jinam pomocí položky <b>Přesuň...</b>. Táhni a pusť vybrané položky do 
+externího správce souborů je taky podporováno - můžeš je tak přesouvat nebo kopírovat. A pomocí 
+<b>Exportuj seznam...</b> můžeš vytvořit ve vybraném umístění textový soubor s úplnými cestami ke všem 
+vybraným souborům, což můžeš později využít např. v shellovém skriptu.
+<br/><br/>
+Kontextová nabídka zahrnuje i obecné příkazy jako <b>Vymaž seznam</b> nebo <b>Vyber vše</b>.
+</div>
+
+<div class="ln">&nbsp;</div>
+
+<h2>Poznámky</h2>
+<div>
+Bad Beggy používá k otestování souborů obrázků knihovnu Java Image IO (JIIO). Jeho dekodér oznamuje 
+varování a chyby, když se obrázek natahuje. Takže výsledky závisí na aktuálnosti dekodéru a taky změnách 
+jeho funkčnosti. Bad Peggy přesto při spuštění obecně zjišťuje, jestli jsou všeobecně známé chyby v obrázcích 
+zaznamenávány, to je, jestli JIIO pořád funguje při zjišťování poškozených obrázků tak, jak očekáváme.
+
+Záleží na tom, co ve skutečnosti znamená "poškozený" a může to být
+<ul>
+<li>jednoduše není formát zcela podporován, např. CMYK pro JPEGy.</li>
+<li>malý rozdíl od oficiálního formátu, např. data připojená navíc za vlastní obrázek.</li>
+<li>nepodstatné věci, jako jsou neznámé hodnoty, které vůbec neovlivní zobrazení obrázku.</li>
+<li>menší poškození, které naruší jen menší oblasti obrázku.</li>
+<li>větší poškození, které způsobí, že zobrazení je za určitým místem zničené.</li>
+<li>úplné uříznutí, to je neúplné obrázky.</li>
+<li>chyby na začátku souborů, takže dekódování nemůže ani začít.</li>
+<li>soubory, které vůbec nejsou obrázky, ale shodou okolností mají takovou příponu.</li>
+<li>obrázkové soubory, které nejsou rozpoznány dekodérem JIIO, ale mohou být zpracovány jiným prohlížečem 
+obrázků, např. když je před začátkem dat obrázku uložena přídavná informace (kterou šikovnější nebo agresívnější 
+dekodéry přeskočí).</li>
+<li>obrázek vypadá poškozený, protože tak byl natažen a znovu uložen v jiné aplikaci - a proto je jeho struktura 
+v pořádku.</li>
+<li>obrázek, který je logicky poškozen, ale JIIO  si nestěžuje, ačkoliv vady jsou jasně viditelné - to je jeden 
+z nejproblematičtějších případů, protože takové soubory nemohou být pomocí BadPeggy odhaleny - odhalení takových 
+problémů je obtížné, je to možné srovnat s tím, když textový editor natáhne a zobrazí soubor se slovem "text 
+pr{cessor", ve kterém došlo chybným přenosem k záměně 'o' na '{', ale editoru text dává pořád smysl.
+</li>
+</ul> 
+Obecně se nedoporučuje hned vyhazovat každý obrázek, označený za poškozený, ale zkusit, jestli není možná oprava nebo 
+uložení souboru do platného obrázkového formátu znovu v jiné aplikaci.
+</div>
+
+<div class="ln">&nbsp;</div>
+<div class="cr">
+<i><a style="text-decoration:none" href="https://coderslagoon.com/">Copyright 2005-present CODERSLAGOON</a></i>
+</div>
+
+</body>
+</html>

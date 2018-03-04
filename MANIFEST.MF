@@ -4,9 +4,9 @@ Main-Class: coderslagoon.badpeggy.GUI
 Class-Path: . swt.jar
 Name: coderslagoon/badpeggy/exe/gui
 Specification-Title: BadPeggy Executables
-Specification-Version: 2.2
+Specification-Version: 2.3
 Specification-Vendor: CODERSLAGOON
 Implementation-Title: badpeggy.exe
-Implementation-Version: 2.2
+Implementation-Version: 2.3
 Implementation-Vendor: CODERSLAGOON
 Trusted-Library: true
